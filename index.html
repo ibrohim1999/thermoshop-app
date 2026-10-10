@@ -335,6 +335,22 @@
   .lang-opt:last-child { border-bottom: none; }
   .lang-opt .tick { color: var(--copper); font-weight: 700; visibility: hidden; }
   .lang-opt.sel .tick { visibility: visible; }
+
+  /* ---------- Keng ekranlar (kompyuter) ---------- */
+  .hero, .cats, .grid, .contact-strip { max-width: 1000px; margin-left: auto; margin-right: auto; }
+  .contact-strip { margin-left: auto; margin-right: auto; }
+  @media (min-width: 1040px) {
+    .contact-strip { max-width: 964px; }
+  }
+  .topbar { padding-left: max(18px, calc((100vw - 1000px) / 2 + 18px)); padding-right: max(18px, calc((100vw - 1000px) / 2 + 18px)); }
+  @media (min-width: 600px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+    .drawer, .sheet { left: 50%; right: auto; width: 520px; transform: translate(-50%, 100%); }
+    .drawer.open, .sheet.open { transform: translate(-50%, 0); }
+  }
+  @media (min-width: 900px) {
+    .grid { grid-template-columns: repeat(4, 1fr); }
+  }
 </style>
 </head>
 <body>
