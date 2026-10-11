@@ -637,8 +637,8 @@ const I18N = {
   ru: {
     hours: 'Работаем сегодня, 9:00–18:00',
     h1: 'Котлы, насосы и водонагреватели с доставкой по Ташкенту',
-    sub: 'Оригинальные Ariston, Grundfos, DAB, Navien и другие бренды. Выберите товар — оформим заказ прямо здесь.',
-    address: 'Ташкент, Алмазарский район, ул. Ширака, 2',
+    sub: 'Оригинальные Grundfos, Immergas, Sime и другие бренды. Выберите товар — оформим заказ прямо здесь.',
+    address: 'Ташкент, ул. Уста Ширин, 1-й проезд (1-тор кўча), 4',
     cat_all: 'Все товары', cat_heaters: 'Водонагреватели', cat_boilers: 'Котлы', cat_pumps: 'Насосы',
     cart: 'Корзина', total: 'Итого', checkout: 'Оформить заказ', add_cart: 'В корзину',
     note: 'Заказ будет отправлен менеджеру в Telegram',
@@ -661,8 +661,8 @@ const I18N = {
   uz: {
     hours: 'Bugun ishlaymiz, 9:00–18:00',
     h1: "Qozonlar, nasoslar va suv isitgichlar Toshkent bo'ylab yetkazib berish bilan",
-    sub: "Original Ariston, Grundfos, DAB, Navien va boshqa brendlar. Mahsulotni tanlang — buyurtmani shu yerning o'zida rasmiylashtiramiz.",
-    address: "Toshkent, Olmazor tumani, Shiroq ko'chasi, 2-uy",
+    sub: "Original Grundfos, Immergas, Sime va boshqa brendlar. Mahsulotni tanlang — buyurtmani shu yerning o'zida rasmiylashtiramiz.",
+    address: "Toshkent, Usta Shirin 1-tor ko'chasi, 4",
     cat_all: 'Barcha mahsulotlar', cat_heaters: 'Suv isitgichlar', cat_boilers: 'Qozonlar', cat_pumps: 'Nasoslar',
     cart: 'Savat', total: 'Jami', checkout: 'Buyurtma berish', add_cart: 'Savatga',
     note: 'Buyurtma Telegram orqali menejerga yuboriladi',
@@ -685,8 +685,8 @@ const I18N = {
   en: {
     hours: 'Open today, 9:00–18:00',
     h1: 'Boilers, pumps and water heaters delivered across Tashkent',
-    sub: 'Original Ariston, Grundfos, DAB, Navien and other brands. Pick a product and place your order right here.',
-    address: '2 Shiraq St, Olmazor district, Tashkent',
+    sub: 'Original Grundfos, Immergas, Sime and other brands. Pick a product and place your order right here.',
+    address: 'Usta Shirin 1-tor St, 4, Tashkent',
     cat_all: 'All products', cat_heaters: 'Water heaters', cat_boilers: 'Boilers', cat_pumps: 'Pumps',
     cart: 'Cart', total: 'Total', checkout: 'Place order', add_cart: 'Add to cart',
     note: 'Your order will be sent to the manager in Telegram',
@@ -739,7 +739,7 @@ const priceText = (p) => p.price ? fmt(p.price) : t('on_request');
 
 function renderCats() {
   const el = document.getElementById('cats');
-  el.innerHTML = CATS.map(c =>
+  el.innerHTML = CATS.filter(c => c.id === 'all' || PRODUCTS.some(p => p.cat === c.id)).map(c =>
     `<div class="pill ${c.id === activeCat ? 'active' : ''}" data-cat="${c.id}">${t('cat_' + c.id)}</div>`
   ).join('');
   el.querySelectorAll('.pill').forEach(p => p.onclick = () => { activeCat = p.dataset.cat; renderCats(); renderGrid(); });
@@ -928,7 +928,7 @@ document.getElementById('splash').addEventListener('click', function () { this.c
 
 // ---- Do'kon manzili: Yandex marshrut
 // Aniq marshrut uchun koordinatalarni yozing: lat va lon (masalan 41.2995 va 69.2401). null bo'lsa, manzil matni bilan qidiriladi.
-const SHOP = { lat: null, lon: null, query: 'Ташкент, Алмазарский район, улица Ширака, 2' };
+const SHOP = { lat: 41.354911, lon: 69.251440, query: "Toshkent, Usta Shirin 1-tor ko'chasi, 4" };
 const routeSheet = document.getElementById('routeSheet');
 const routeOverlay = document.getElementById('routeOverlay');
 function openRoute() {
