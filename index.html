@@ -336,12 +336,35 @@
   .lang-opt .tick { color: var(--copper); font-weight: 700; visibility: hidden; }
   .lang-opt.sel .tick { visibility: visible; }
 
+
+  /* ---------- Ro'yxatdan o'tish ---------- */
+  .banner { margin-top: 6px; padding: 14px 14px 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); display: flex; align-items: center; gap: 12px; }
+  .banner-text { flex: 1; min-width: 0; }
+  .banner-title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+  .banner-sub { font-size: 12px; color: var(--text-dim); margin-top: 3px; line-height: 1.4; overflow-wrap: anywhere; }
+  .banner-btn { padding: 10px 16px; border-radius: 9px; background: var(--copper); color: #fff; border: none; font-weight: 600; font-size: 13.5px; font-family: inherit; cursor: pointer; flex-shrink: 0; }
+  .banner-btn.ghost { background: var(--surface-2); border: 1px solid var(--line); color: var(--text); }
+  .field { display: block; margin-top: 14px; }
+  .field > span { display: block; font-size: 12.5px; color: var(--text-dim); margin-bottom: 6px; }
+  .field input, .field textarea { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; color: var(--text); font-size: 16px; padding: 13px 14px; font-family: inherit; outline: none; resize: none; }
+  .field input:focus, .field textarea:focus { border-color: var(--copper); }
+  .phone-wrap { display: flex; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding-left: 14px; }
+  .phone-wrap:focus-within { border-color: var(--copper); }
+  .phone-wrap .cc { font-size: 16px; color: var(--text-dim); padding-right: 8px; white-space: nowrap; }
+  .phone-wrap input { border: none; background: transparent; padding-left: 0; }
+  .geo-btn { margin-top: 12px; width: 100%; padding: 12px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); color: var(--text); font-size: 14px; font-family: inherit; cursor: pointer; }
+  .geo-btn.done { border-color: var(--teal); color: var(--teal); }
+  .consent { display: flex; align-items: center; gap: 10px; margin-top: 16px; font-size: 13px; color: var(--text-dim); }
+  .consent input { width: 20px; height: 20px; accent-color: var(--copper); flex-shrink: 0; }
+  .reg-err { color: #E5736A; font-size: 13px; margin-top: 12px; min-height: 1em; }
+  .reg-sub { color: var(--text-dim); font-size: 13.5px; margin: 0; line-height: 1.45; }
+  .deliv { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; font-size: 12.5px; color: var(--text-dim); line-height: 1.45; margin-bottom: 12px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow-wrap: anywhere; }
+  .deliv b { color: var(--text); font-weight: 600; }
+  .deliv a { color: var(--copper); cursor: pointer; flex-shrink: 0; font-weight: 600; }
+
   /* ---------- Keng ekranlar (kompyuter) ---------- */
-  .hero, .cats, .grid, .contact-strip { max-width: 1000px; margin-left: auto; margin-right: auto; }
-  .contact-strip { margin-left: auto; margin-right: auto; }
-  @media (min-width: 1040px) {
-    .contact-strip { max-width: 964px; }
-  }
+  .hero, .cats, .grid { max-width: 1000px; margin-left: auto; margin-right: auto; }
+  .contact-strip, .banner { width: calc(100% - 36px); max-width: 964px; margin-left: auto; margin-right: auto; }
   .topbar { padding-left: max(18px, calc((100vw - 1000px) / 2 + 18px)); padding-right: max(18px, calc((100vw - 1000px) / 2 + 18px)); }
   @media (min-width: 600px) {
     .grid { grid-template-columns: repeat(3, 1fr); }
@@ -376,6 +399,8 @@
   <p data-i18n="sub"></p>
 </section>
 
+<div class="banner" id="profileBanner"></div>
+
 <nav class="cats" id="cats"></nav>
 <div class="grid" id="grid"></div>
 
@@ -395,6 +420,24 @@
   <div class="drawer-handle"></div>
   <div class="sheet-scroll" id="sheetBody"></div>
   <div class="sheet-foot"><button class="checkout-btn" id="sheetAdd" data-i18n="add_cart"></button></div>
+</div>
+
+<div class="overlay sheet-overlay" id="regOverlay"></div>
+<div class="sheet" id="regSheet">
+  <div class="drawer-handle"></div>
+  <div class="sheet-scroll">
+    <h3 style="font-size:19px;margin:12px 0 6px" data-i18n="reg_title"></h3>
+    <p class="reg-sub" data-i18n="reg_sub"></p>
+    <label class="field"><span data-i18n="f_name"></span><input id="fName" type="text" autocomplete="name" maxlength="60" data-i18n-ph="ph_name"></label>
+    <label class="field"><span data-i18n="f_phone"></span>
+      <div class="phone-wrap"><span class="cc">+998</span><input id="fPhone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="12" placeholder="90 123 45 67"></div>
+    </label>
+    <label class="field"><span data-i18n="f_addr"></span><textarea id="fAddr" rows="2" maxlength="200" data-i18n-ph="ph_addr"></textarea></label>
+    <button class="geo-btn" id="geoBtn" type="button" data-i18n="geo"></button>
+    <label class="consent"><input type="checkbox" id="fConsent"><span data-i18n="consent"></span></label>
+    <div class="reg-err" id="regErr"></div>
+  </div>
+  <div class="sheet-foot"><button class="checkout-btn" id="regSave" data-i18n="cont"></button></div>
 </div>
 
 <div class="overlay sheet-overlay" id="langOverlay"></div>
@@ -418,6 +461,7 @@
   </div>
   <div class="drawer-items" id="drawerItems"></div>
   <div class="drawer-foot">
+    <div class="deliv" id="delivInfo" style="display:none"></div>
     <div class="total-row">
       <span class="total-label" data-i18n="total"></span>
       <span class="total-val" id="totalVal">0 сум</span>
@@ -459,6 +503,14 @@ const I18N = {
     cur: 'сум', sending: 'Отправляем...', lang_title: 'Язык', save: 'Сохранить',
     ok: 'Заказ принят! Скоро с вами свяжется менеджер.',
     fail: 'Не удалось отправить заказ. Попробуйте ещё раз или позвоните: +998 90 902 88 33',
+    reg_title: 'Регистрация', reg_sub: 'Укажите данные для доставки заказа',
+    f_name: 'Имя', ph_name: 'Как к вам обращаться', f_phone: 'Номер телефона',
+    f_addr: 'Адрес доставки', ph_addr: 'Район, улица, дом, ориентир',
+    geo: '📍 Отправить геолокацию', geo_done: '✓ Геолокация добавлена', geo_fail: 'Не удалось определить местоположение',
+    consent: 'Я согласен с пользовательским соглашением', cont: 'Продолжить',
+    b_title: 'Войдите, чтобы оформить заказ', b_sub: 'Укажите имя, телефон и адрес доставки', b_btn: 'Войти', edit: 'Изменить',
+    e_name: 'Введите имя', e_phone: 'Введите номер полностью', e_addr: 'Укажите адрес доставки', e_consent: 'Необходимо согласие',
+    o_client: 'Клиент', o_phone: 'Телефон', o_addr: 'Адрес', o_geo: 'Геолокация',
   },
   uz: {
     hours: 'Bugun ishlaymiz, 9:00–18:00',
@@ -472,6 +524,14 @@ const I18N = {
     cur: "so'm", sending: 'Yuborilmoqda...', lang_title: 'Til', save: 'Saqlash',
     ok: "Buyurtma qabul qilindi! Tez orada menejer siz bilan bog'lanadi.",
     fail: "Buyurtmani yuborib bo'lmadi. Qayta urinib ko'ring yoki qo'ng'iroq qiling: +998 90 902 88 33",
+    reg_title: "Ro'yxatdan o'tish", reg_sub: "Buyurtmani yetkazib berish uchun ma'lumotlarni kiriting",
+    f_name: 'Ism', ph_name: 'Ismingiz', f_phone: 'Telefon raqami',
+    f_addr: 'Yetkazib berish manzili', ph_addr: "Tuman, ko'cha, uy, mo'ljal",
+    geo: '📍 Joylashuvni yuborish', geo_done: "✓ Joylashuv qo'shildi", geo_fail: "Joylashuvni aniqlab bo'lmadi",
+    consent: 'Foydalanuvchi shartnomasiga roziman', cont: 'Davom etish',
+    b_title: "Buyurtma uchun ro'yxatdan o'ting", b_sub: "Ism, telefon va yetkazib berish manzilini kiriting", b_btn: 'Kirish', edit: 'Tahrirlash',
+    e_name: 'Ismingizni kiriting', e_phone: "Telefon raqamini to'liq kiriting", e_addr: 'Manzilni kiriting', e_consent: 'Rozilik kerak',
+    o_client: 'Клиент', o_phone: 'Телефон', o_addr: 'Адрес', o_geo: 'Геолокация',
   },
   en: {
     hours: 'Open today, 9:00–18:00',
@@ -485,6 +545,14 @@ const I18N = {
     cur: 'UZS', sending: 'Sending...', lang_title: 'Language', save: 'Save',
     ok: 'Order received! A manager will contact you soon.',
     fail: "Couldn't send the order. Try again or call: +998 90 902 88 33",
+    reg_title: 'Sign up', reg_sub: 'Enter your details for order delivery',
+    f_name: 'Name', ph_name: 'Your name', f_phone: 'Phone number',
+    f_addr: 'Delivery address', ph_addr: 'District, street, house, landmark',
+    geo: '📍 Share my location', geo_done: '✓ Location added', geo_fail: "Couldn't get your location",
+    consent: 'I agree to the terms of use', cont: 'Continue',
+    b_title: 'Sign up to place an order', b_sub: 'Add your name, phone and delivery address', b_btn: 'Sign up', edit: 'Edit',
+    e_name: 'Enter your name', e_phone: 'Enter the full phone number', e_addr: 'Enter your delivery address', e_consent: 'Consent is required',
+    o_client: 'Клиент', o_phone: 'Телефон', o_addr: 'Адрес', o_geo: 'Геолокация',
   },
 };
 const LANGS = [
@@ -611,11 +679,13 @@ overlay.onclick = closeDrawer;
 document.getElementById('checkoutBtn').onclick = () => {
   const entries = Object.entries(cart).filter(([,q]) => q > 0);
   if (!entries.length) return;
+  if (!profile) { openReg(() => document.getElementById('checkoutBtn').click()); return; }
   const lines = entries.map(([id, qty]) => {
     const p = PRODUCTS.find(x => x.id === Number(id));
     return `${trL(p.name, 'ru')} × ${qty} — ${p.price * qty} сум`;
   });
-  const orderText = `Новый заказ Thermoshop:\n\n${lines.join('\n')}\n\nИтого: ${cartTotal()} сум\nЯзык клиента: ${lang}`;
+  const geoLine = profile.geo ? `\nГеолокация: https://maps.google.com/?q=${profile.geo.lat},${profile.geo.lon}` : '';
+  const orderText = `Новый заказ Thermoshop:\n\nКлиент: ${profile.name}\nТелефон: +998${profile.phone}\nАдрес: ${profile.address}${geoLine}\n\n${lines.join('\n')}\n\nИтого: ${cartTotal()} сум\nЯзык клиента: ${lang}`;
 
   const payload = { items: entries.map(([id, qty]) => ({ id: Number(id), qty })), total: cartTotal(), text: orderText };
   const btn = document.getElementById('checkoutBtn');
@@ -690,9 +760,91 @@ function applyLang() {
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   document.getElementById('langCode').textContent = LANGS.find(l => l.id === lang).short;
-  renderCats(); renderGrid(); renderCartUI();
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  renderCats(); renderGrid(); renderCartUI(); renderProfileUI();
   if (sheet.classList.contains('open') && sheetId) openSheet(sheetId);
 }
+// ---- Profil (ro'yxatdan o'tish)
+const esc = (v) => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function loadProfile() {
+  try {
+    const p = JSON.parse(localStorage.getItem('ts_profile') || 'null');
+    return p && p.name && p.phone && p.address ? p : null;
+  } catch (e) { return null; }
+}
+let profile = loadProfile();
+function fmtPhone(d) { return [d.slice(0, 2), d.slice(2, 5), d.slice(5, 7), d.slice(7, 9)].filter(Boolean).join(' '); }
+
+const regSheet = document.getElementById('regSheet');
+const regOverlay = document.getElementById('regOverlay');
+let afterReg = null, geoTmp = null;
+
+function openReg(cb) {
+  afterReg = cb || null;
+  const tu = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+  document.getElementById('fName').value = profile ? profile.name : (tu && tu.first_name) || '';
+  document.getElementById('fPhone').value = profile ? fmtPhone(profile.phone) : '';
+  document.getElementById('fAddr').value = profile ? profile.address : '';
+  document.getElementById('fConsent').checked = !!profile;
+  document.getElementById('regErr').textContent = '';
+  geoTmp = profile && profile.geo ? profile.geo : null;
+  const gb = document.getElementById('geoBtn');
+  gb.classList.toggle('done', !!geoTmp); gb.textContent = geoTmp ? t('geo_done') : t('geo');
+  regOverlay.classList.add('open'); regSheet.classList.add('open');
+}
+function closeReg() { regOverlay.classList.remove('open'); regSheet.classList.remove('open'); afterReg = null; }
+regOverlay.onclick = closeReg;
+
+document.getElementById('fPhone').oninput = (e) => {
+  e.target.value = fmtPhone(e.target.value.replace(/\D/g, '').slice(0, 9));
+};
+document.getElementById('geoBtn').onclick = () => {
+  const gb = document.getElementById('geoBtn');
+  if (!navigator.geolocation) { document.getElementById('regErr').textContent = t('geo_fail'); return; }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      geoTmp = { lat: +pos.coords.latitude.toFixed(6), lon: +pos.coords.longitude.toFixed(6) };
+      gb.classList.add('done'); gb.textContent = t('geo_done');
+      document.getElementById('regErr').textContent = '';
+    },
+    () => { document.getElementById('regErr').textContent = t('geo_fail'); },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+};
+['fName', 'fPhone', 'fAddr', 'fConsent'].forEach(id => document.getElementById(id).addEventListener('input', () => { document.getElementById('regErr').textContent = ''; }));
+document.getElementById('regSave').onclick = () => {
+  const name = document.getElementById('fName').value.trim();
+  const phone = document.getElementById('fPhone').value.replace(/\D/g, '');
+  const address = document.getElementById('fAddr').value.trim();
+  const err = document.getElementById('regErr');
+  if (name.length < 2) { err.textContent = t('e_name'); return; }
+  if (phone.length !== 9) { err.textContent = t('e_phone'); return; }
+  if (address.length < 5) { err.textContent = t('e_addr'); return; }
+  if (!document.getElementById('fConsent').checked) { err.textContent = t('e_consent'); return; }
+  profile = { name, phone, address, geo: geoTmp };
+  try { localStorage.setItem('ts_profile', JSON.stringify(profile)); } catch (e) {}
+  const cb = afterReg;
+  closeReg(); renderProfileUI();
+  if (tg) tg.HapticFeedback.notificationOccurred('success');
+  if (cb) cb();
+};
+
+function renderProfileUI() {
+  const b = document.getElementById('profileBanner');
+  if (!profile) {
+    b.innerHTML = `<div class="banner-text"><div class="banner-title">${t('b_title')}</div><div class="banner-sub">${t('b_sub')}</div></div><button class="banner-btn" id="bannerBtn">${t('b_btn')}</button>`;
+  } else {
+    b.innerHTML = `<div class="banner-text"><div class="banner-title">${esc(profile.name)}</div><div class="banner-sub">+998 ${fmtPhone(profile.phone)} · ${esc(profile.address)}</div></div><button class="banner-btn ghost" id="bannerBtn">${t('edit')}</button>`;
+  }
+  document.getElementById('bannerBtn').onclick = () => openReg();
+  const d = document.getElementById('delivInfo');
+  if (profile) {
+    d.style.display = 'flex';
+    d.innerHTML = `<div><b>${esc(profile.name)}</b> · +998 ${fmtPhone(profile.phone)}<br>${esc(profile.address)}</div><a id="delivEdit">${t('edit')}</a>`;
+    document.getElementById('delivEdit').onclick = () => openReg();
+  } else { d.style.display = 'none'; d.innerHTML = ''; }
+}
+
 applyLang();
 </script>
 </body>
