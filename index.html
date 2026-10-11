@@ -409,6 +409,9 @@
   .reg-err { color: #E5736A; font-size: 13px; margin-top: 12px; min-height: 1em; }
   .reg-sub { color: var(--text-dim); font-size: 13.5px; margin: 0; line-height: 1.45; }
   .deliv { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; font-size: 12.5px; color: var(--text-dim); line-height: 1.45; margin-bottom: 12px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow-wrap: anywhere; }
+  .quote-note { font-size: 12px; color: var(--text-dim); line-height: 1.4; margin: -2px 0 10px; }
+  .card-price.req { font-size: 12.5px; font-weight: 600; color: var(--text-dim); }
+  .sheet-price.req { font-size: 17px; color: var(--text-dim); }
   .deliv b { color: var(--text); font-weight: 600; }
   .deliv a { color: var(--copper); cursor: pointer; flex-shrink: 0; font-weight: 600; }
 
@@ -552,6 +555,7 @@
   <div class="drawer-items" id="drawerItems"></div>
   <div class="drawer-foot">
     <div class="deliv" id="delivInfo" style="display:none"></div>
+    <div class="quote-note" id="quoteNote" style="display:none"></div>
     <div class="total-row">
       <span class="total-label" data-i18n="total"></span>
       <span class="total-val" id="totalVal">0 сум</span>
@@ -622,6 +626,7 @@ const I18N = {
     empty: 'Корзина пока пуста.<br>Добавьте товары из каталога.',
     cur: 'сум', sending: 'Отправляем...', lang_title: 'Язык', save: 'Сохранить',
     ok: 'Заказ принят! Скоро с вами свяжется менеджер.',
+    on_request: 'Цена по запросу', quote_note: 'Цена части товаров уточняется — менеджер сообщит при подтверждении заказа',
     fail: 'Не удалось отправить заказ. Попробуйте ещё раз или позвоните: +998 90 902 88 33',
     reg_title: 'Регистрация', reg_sub: 'Укажите данные для доставки заказа',
     f_name: 'Имя', ph_name: 'Как к вам обращаться', f_phone: 'Номер телефона',
@@ -643,6 +648,7 @@ const I18N = {
     empty: "Savat hozircha bo'sh.<br>Katalogdan mahsulot qo'shing.",
     cur: "so'm", sending: 'Yuborilmoqda...', lang_title: 'Til', save: 'Saqlash',
     ok: "Buyurtma qabul qilindi! Tez orada menejer siz bilan bog'lanadi.",
+    on_request: "Narxi so'rang", quote_note: "Ba'zi mahsulotlar narxi aniqlanadi — menejer buyurtmani tasdiqlashda aytadi",
     fail: "Buyurtmani yuborib bo'lmadi. Qayta urinib ko'ring yoki qo'ng'iroq qiling: +998 90 902 88 33",
     reg_title: "Ro'yxatdan o'tish", reg_sub: "Buyurtmani yetkazib berish uchun ma'lumotlarni kiriting",
     f_name: 'Ism', ph_name: 'Ismingiz', f_phone: 'Telefon raqami',
@@ -664,6 +670,7 @@ const I18N = {
     empty: 'Your cart is empty.<br>Add items from the catalog.',
     cur: 'UZS', sending: 'Sending...', lang_title: 'Language', save: 'Save',
     ok: 'Order received! A manager will contact you soon.',
+    on_request: 'Price on request', quote_note: 'Some items are priced on request — the manager will confirm the price',
     fail: "Couldn't send the order. Try again or call: +998 90 902 88 33",
     reg_title: 'Sign up', reg_sub: 'Enter your details for order delivery',
     f_name: 'Name', ph_name: 'Your name', f_phone: 'Phone number',
@@ -703,6 +710,7 @@ let activeCat = 'all';
 let cart = {}; // id -> qty
 
 function fmt(n) { return n.toLocaleString('ru-RU') + ' ' + t('cur'); }
+const priceText = (p) => p.price ? fmt(p.price) : t('on_request');
 
 function renderCats() {
   const el = document.getElementById('cats');
@@ -722,7 +730,7 @@ function renderGrid() {
         <div class="card-brand">${p.brand}</div>
         <div class="card-name">${tr(p.name)}</div>
         <div class="card-foot">
-          <div class="card-price">${fmt(p.price)}</div>
+          <div class="card-price ${p.price ? '' : 'req'}">${priceText(p)}</div>
           <button class="add-btn ${cart[p.id] ? 'in-cart' : ''}" data-id="${p.id}">${cart[p.id] ? '✓' : '+'}</button>
         </div>
       </div>
@@ -741,8 +749,11 @@ function renderGrid() {
 function cartTotal() {
   return Object.entries(cart).reduce((sum, [id, qty]) => {
     const p = PRODUCTS.find(x => x.id === Number(id));
-    return sum + (p ? p.price * qty : 0);
+    return sum + (p && p.price ? p.price * qty : 0);
   }, 0);
+}
+function hasUnpriced() {
+  return Object.entries(cart).some(([id, q]) => q > 0 && !(PRODUCTS.find(x => x.id === Number(id)) || {}).price);
 }
 function cartCount() {
   return Object.values(cart).reduce((a, b) => a + b, 0);
@@ -765,7 +776,7 @@ function renderCartUI() {
         <div class="cart-row">
           <div style="flex:1">
             <div class="cart-row-name">${tr(p.name)}</div>
-            <div class="cart-row-price">${fmt(p.price)}</div>
+            <div class="cart-row-price">${priceText(p)}</div>
           </div>
           <div class="qty-ctrl">
             <button class="qty-btn" data-act="dec" data-id="${id}">−</button>
@@ -782,7 +793,10 @@ function renderCartUI() {
     });
   }
 
-  document.getElementById('totalVal').textContent = fmt(cartTotal());
+  const unp = hasUnpriced();
+  document.getElementById('totalVal').textContent = cartTotal() ? fmt(cartTotal()) + (unp ? ' +' : '') : (unp ? t('on_request') : fmt(0));
+  const qn = document.getElementById('quoteNote');
+  qn.style.display = unp ? 'block' : 'none'; qn.textContent = t('quote_note');
   document.getElementById('checkoutBtn').disabled = !entries.length;
 }
 
@@ -802,10 +816,10 @@ document.getElementById('checkoutBtn').onclick = () => {
   if (!profile) { openReg(() => document.getElementById('checkoutBtn').click()); return; }
   const lines = entries.map(([id, qty]) => {
     const p = PRODUCTS.find(x => x.id === Number(id));
-    return `${trL(p.name, 'ru')} × ${qty} — ${p.price * qty} сум`;
+    return `${trL(p.name, 'ru')} × ${qty} — ${p.price ? (p.price * qty) + ' сум' : 'цена по запросу'}`;
   });
   const geoLine = profile.geo ? `\nГеолокация: https://maps.google.com/?q=${profile.geo.lat},${profile.geo.lon}` : '';
-  const orderText = `Новый заказ Thermoshop:\n\nКлиент: ${profile.name}\nТелефон: +998${profile.phone}\nАдрес: ${profile.address}${geoLine}\n\n${lines.join('\n')}\n\nИтого: ${cartTotal()} сум\nЯзык клиента: ${lang}`;
+  const orderText = `Новый заказ Thermoshop:\n\nКлиент: ${profile.name}\nТелефон: +998${profile.phone}\nАдрес: ${profile.address}${geoLine}\n\n${lines.join('\n')}\n\nИтого: ${cartTotal()} сум${hasUnpriced() ? ' + товары с ценой по запросу' : ''}\nЯзык клиента: ${lang}`;
 
   const payload = { items: entries.map(([id, qty]) => ({ id: Number(id), qty })), total: cartTotal(), text: orderText };
   const btn = document.getElementById('checkoutBtn');
@@ -846,7 +860,7 @@ function openSheet(id) {
     ${p.img ? `<div class="sheet-img"><img src="${p.img}" alt="${tr(p.name)}"></div>` : `<div class="sheet-img icon">${ICONS[p.icon]}</div>`}
     <div class="sheet-brand">${p.brand}</div>
     <h2 class="sheet-name">${tr(p.name)}</h2>
-    <div class="sheet-price">${fmt(p.price)}</div>
+    <div class="sheet-price ${p.price ? '' : 'req'}">${priceText(p)}</div>
     ${specs ? `<div class="specs">${specs}</div>` : ''}`;
   sheetOverlay.classList.add('open'); sheet.classList.add('open');
 }
