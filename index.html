@@ -412,6 +412,13 @@
   .quote-note { font-size: 12px; color: var(--text-dim); line-height: 1.4; margin: -2px 0 10px; }
   .card-price.req { font-size: 12.5px; font-weight: 600; color: var(--text-dim); }
   .sheet-price.req { font-size: 17px; color: var(--text-dim); }
+  .contact-row a { color: var(--text); text-decoration: none; border-bottom: 1px dashed var(--teal); padding-bottom: 1px; }
+  .contact-row.tap { cursor: pointer; }
+  .route-hint { margin-left: auto; padding-left: 10px; color: var(--copper); font-weight: 600; font-size: 12.5px; white-space: nowrap; }
+  .route-addr { color: var(--text-dim); font-size: 13.5px; line-height: 1.45; margin: 4px 0 6px; }
+  .route-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); color: var(--text); text-decoration: none; font-size: 15px; font-weight: 600; margin-top: 10px; font-family: inherit; cursor: pointer; text-align: left; }
+  .route-btn svg { width: 22px; height: 22px; color: var(--copper); flex-shrink: 0; }
+  .route-note { color: var(--text-faint); font-size: 12px; line-height: 1.45; margin: 12px 0 4px; }
   .deliv b { color: var(--text); font-weight: 600; }
   .deliv a { color: var(--copper); cursor: pointer; flex-shrink: 0; font-weight: 600; }
 
@@ -500,11 +507,11 @@
 <div class="contact-strip">
   <div class="contact-row">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-    +998 90 902 88 33 · +998 90 902 44 99
+    <span><a href="tel:+998909028833">+998 90 902 88 33</a> · <a href="tel:+998909024499">+998 90 902 44 99</a></span>
   </div>
-  <div class="contact-row">
+  <div class="contact-row tap" id="addrRow" role="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-    <span data-i18n="address"></span>
+    <span data-i18n="address"></span><span class="route-hint" data-i18n="route"></span>
   </div>
 </div>
 
@@ -531,6 +538,18 @@
     <div class="reg-err" id="regErr"></div>
   </div>
   <div class="sheet-foot"><button class="checkout-btn" id="regSave" data-i18n="cont"></button></div>
+</div>
+
+<div class="overlay sheet-overlay" id="routeOverlay"></div>
+<div class="sheet" id="routeSheet">
+  <div class="drawer-handle"></div>
+  <div class="sheet-scroll" style="padding-bottom:6px">
+    <h3 style="font-size:19px;margin:12px 0 4px" data-i18n="route_title"></h3>
+    <div class="route-addr" data-i18n="address"></div>
+    <a class="route-btn" id="rtNavi" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg><span data-i18n="navi"></span></a>
+    <a class="route-btn" id="rtMaps" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="ymaps"></span></a>
+    <div class="route-note" data-i18n="route_note"></div>
+  </div>
 </div>
 
 <div class="overlay sheet-overlay" id="langOverlay"></div>
@@ -626,6 +645,8 @@ const I18N = {
     empty: 'Корзина пока пуста.<br>Добавьте товары из каталога.',
     cur: 'сум', sending: 'Отправляем...', lang_title: 'Язык', save: 'Сохранить',
     ok: 'Заказ принят! Скоро с вами свяжется менеджер.',
+    route: 'Маршрут', route_title: 'Как добраться', navi: 'Яндекс Навигатор', ymaps: 'Яндекс Карты',
+    route_note: 'Маршрут строится от вашего местоположения. Если Яндекс Навигатор не установлен, выберите Яндекс Карты.',
     on_request: 'Цена по запросу', quote_note: 'Цена части товаров уточняется — менеджер сообщит при подтверждении заказа',
     fail: 'Не удалось отправить заказ. Попробуйте ещё раз или позвоните: +998 90 902 88 33',
     reg_title: 'Регистрация', reg_sub: 'Укажите данные для доставки заказа',
@@ -648,6 +669,8 @@ const I18N = {
     empty: "Savat hozircha bo'sh.<br>Katalogdan mahsulot qo'shing.",
     cur: "so'm", sending: 'Yuborilmoqda...', lang_title: 'Til', save: 'Saqlash',
     ok: "Buyurtma qabul qilindi! Tez orada menejer siz bilan bog'lanadi.",
+    route: "Yo'nalish", route_title: "Yo'lni ko'rsatish", navi: 'Yandex Navigator', ymaps: 'Yandex Xaritalar',
+    route_note: "Yo'nalish joylashuvingizdan boshlab chiziladi. Yandex Navigator o'rnatilmagan bo'lsa, Yandex Xaritalarni tanlang.",
     on_request: "Narxi so'rang", quote_note: "Ba'zi mahsulotlar narxi aniqlanadi — menejer buyurtmani tasdiqlashda aytadi",
     fail: "Buyurtmani yuborib bo'lmadi. Qayta urinib ko'ring yoki qo'ng'iroq qiling: +998 90 902 88 33",
     reg_title: "Ro'yxatdan o'tish", reg_sub: "Buyurtmani yetkazib berish uchun ma'lumotlarni kiriting",
@@ -670,6 +693,8 @@ const I18N = {
     empty: 'Your cart is empty.<br>Add items from the catalog.',
     cur: 'UZS', sending: 'Sending...', lang_title: 'Language', save: 'Save',
     ok: 'Order received! A manager will contact you soon.',
+    route: 'Route', route_title: 'Get directions', navi: 'Yandex Navigator', ymaps: 'Yandex Maps',
+    route_note: 'The route starts from your current location. If Yandex Navigator is not installed, choose Yandex Maps.',
     on_request: 'Price on request', quote_note: 'Some items are priced on request — the manager will confirm the price',
     fail: "Couldn't send the order. Try again or call: +998 90 902 88 33",
     reg_title: 'Sign up', reg_sub: 'Enter your details for order delivery',
@@ -900,6 +925,31 @@ function applyLang() {
 }
 // ---- Ochilish ekranini bosib o'tkazib yuborish
 document.getElementById('splash').addEventListener('click', function () { this.classList.add('skip'); settleTheme(); });
+
+// ---- Do'kon manzili: Yandex marshrut
+// Aniq marshrut uchun koordinatalarni yozing: lat va lon (masalan 41.2995 va 69.2401). null bo'lsa, manzil matni bilan qidiriladi.
+const SHOP = { lat: null, lon: null, query: 'Ташкент, Алмазарский район, улица Ширака, 2' };
+const routeSheet = document.getElementById('routeSheet');
+const routeOverlay = document.getElementById('routeOverlay');
+function openRoute() {
+  const q = encodeURIComponent(SHOP.query);
+  const hasC = SHOP.lat != null && SHOP.lon != null;
+  document.getElementById('rtNavi').href = hasC
+    ? `yandexnavi://build_route_on_map?lat_to=${SHOP.lat}&lon_to=${SHOP.lon}`
+    : `yandexnavi://map_search?text=${q}`;
+  document.getElementById('rtMaps').href = hasC
+    ? `https://yandex.uz/maps/?rtext=~${SHOP.lat},${SHOP.lon}&rtt=auto`
+    : `https://yandex.uz/maps/?rtext=~${q}&rtt=auto`;
+  routeOverlay.classList.add('open'); routeSheet.classList.add('open');
+}
+function closeRoute() { routeOverlay.classList.remove('open'); routeSheet.classList.remove('open'); }
+document.getElementById('addrRow').onclick = openRoute;
+routeOverlay.onclick = closeRoute;
+document.getElementById('rtMaps').onclick = (e) => {
+  if (tg && tg.openLink) { e.preventDefault(); tg.openLink(e.currentTarget.href); }
+  closeRoute();
+};
+document.getElementById('rtNavi').onclick = () => { setTimeout(closeRoute, 400); };
 
 // ---- Profil (ro'yxatdan o'tish)
 const esc = (v) => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
